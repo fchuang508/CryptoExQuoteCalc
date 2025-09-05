@@ -14,97 +14,134 @@
     const { useState } = React;
 
     function App() {
+      const translations = {
+        en: {
+          toggle: '中文',
+          ethUsd: 'ETHUSD Price',
+          usdCny: 'USD/CNY Rate',
+          fee: 'Fee (CNY)',
+          premium: 'Premium %',
+          ethAmount: 'Amount (ETH)',
+          cnyAmount: 'Amount (CNY)',
+          marketPrice: 'Market Price (CNY/ETH)',
+          priceWithPremium: 'Price With Premium',
+          premiumDiff: 'Premium Difference',
+          marketTotal: 'Total w/o Premium + Fee',
+          premiumTotal: 'Total w/ Premium + Fee',
+          copy: 'Copy',
+          reset: 'Reset'
+        },
+        zh: {
+          toggle: 'EN',
+          ethUsd: 'ETHUSD 价格',
+          usdCny: '美元兑人民币 (CNY/USD)',
+          fee: '手续费 (CNY)',
+          premium: '溢价 %',
+          ethAmount: '加密金额 (ETH)',
+          cnyAmount: '法币金额 (CNY)',
+          marketPrice: '市场价 (元/ETH)',
+          priceWithPremium: '溢价后价格',
+          premiumDiff: '溢价差额',
+          marketTotal: '总价（无溢价+手续费）',
+          premiumTotal: '总价（含溢价+手续费）',
+          copy: '复制',
+          reset: '重置'
+        }
+      };
+
+      const [lang, setLang] = useState('en');
+      const t = translations[lang];
+
       const [ethUsd, setEthUsd] = useState(3000);
       const [usdCny, setUsdCny] = useState(7);
-      const [gas, setGas] = useState(20);
-      const [buyPremium, setBuyPremium] = useState(2);
-      const [sellPremium, setSellPremium] = useState(2);
+      const [fee, setFee] = useState(20);
+      const [premium, setPremium] = useState(3.275);
       const [ethAmount, setEthAmount] = useState(1);
-      const [rmbAmount, setRmbAmount] = useState('');
+      const [cnyAmount, setCnyAmount] = useState('');
 
       const marketPrice = ethUsd * usdCny;
-      const buyPrice = marketPrice * (1 + buyPremium / 100) + gas;
-      const sellPrice = marketPrice * (1 - sellPremium / 100) - gas;
-      const profitBuy = marketPrice * buyPremium / 100;
-      const profitSell = marketPrice * sellPremium / 100;
+      const priceWithPremium = marketPrice * (1 + premium / 100);
 
       const handleEthChange = (e) => {
         setEthAmount(e.target.value);
-        setRmbAmount('');
+        setCnyAmount('');
       };
 
-      const handleRmbChange = (e) => {
-        setRmbAmount(e.target.value);
+      const handleCnyChange = (e) => {
+        setCnyAmount(e.target.value);
         setEthAmount('');
       };
 
-      const ethTotal = rmbAmount !== '' ? (parseFloat(rmbAmount) || 0) / marketPrice : (parseFloat(ethAmount) || 0);
-      const rmbTotal = ethTotal * marketPrice;
-      const buyTotal = marketPrice * ethTotal * (1 + buyPremium / 100) + gas;
-      const sellTotal = marketPrice * ethTotal * (1 - sellPremium / 100) - gas;
-      const profitBuyTotal = buyTotal - (marketPrice * ethTotal + gas);
-      const profitSellTotal = (marketPrice * ethTotal - gas) - sellTotal;
+      const ethTotal = cnyAmount !== '' ? (parseFloat(cnyAmount) || 0) / marketPrice : (parseFloat(ethAmount) || 0);
+      const marketTotal = ethTotal * marketPrice;
+      const marketTotalWithFee = marketTotal + fee;
+      const premiumTotal = ethTotal * priceWithPremium;
+      const premiumTotalWithFee = premiumTotal + fee;
+      const premiumDiff = premiumTotal - marketTotal;
 
-      const copyText = (type) => {
-        const text = type === 'buy'
-          ? `Buy ${ethTotal.toFixed(4)} ETH @ ${buyPrice.toFixed(2)} RMB (total ${buyTotal.toFixed(2)} RMB)`
-          : `Sell ${ethTotal.toFixed(4)} ETH @ ${sellPrice.toFixed(2)} RMB (total ${sellTotal.toFixed(2)} RMB)`;
+      const copyQuote = () => {
+        const text = `${ethTotal.toFixed(4)} ETH @ ${priceWithPremium.toFixed(5)} CNY (total ${premiumTotalWithFee.toFixed(2)} CNY)`;
         navigator.clipboard.writeText(text);
       };
 
       const reset = () => {
         setEthUsd(3000);
         setUsdCny(7);
-        setGas(20);
-        setBuyPremium(2);
-        setSellPremium(2);
+        setFee(20);
+        setPremium(3.275);
         setEthAmount(1);
-        setRmbAmount('');
+        setCnyAmount('');
       };
 
       return (
         <div className="max-w-xl mx-auto space-y-4">
-          <h1 className="text-2xl font-bold">CryptoExQuoteCalc</h1>
-          <div className="grid grid-cols-2 gap-4">
-            <label className="flex flex-col">ETH/USD
-              <input type="number" className="border p-1" value={ethUsd} onChange={e => setEthUsd(parseFloat(e.target.value) || 0)} />
+          <div className="flex justify-between items-center">
+            <h1 className="text-2xl font-bold">CryptoExQuoteCalc</h1>
+            <button className="border px-2 py-1" onClick={() => setLang(lang === 'en' ? 'zh' : 'en')}>{t.toggle}</button>
+          </div>
+
+          <div className="flex flex-wrap gap-4">
+            <label className="flex flex-col flex-1 min-w-[140px]">{t.ethUsd}
+              <input type="number" className="border p-1" value={ethUsd} onChange={e => setEthUsd(parseFloat(e.target.value) || 0)} onFocus={e => e.target.select()} />
+              <span className="text-xs text-gray-500">{lang === 'en' ? 'DEX/CEX market' : '与DEX/CEX行情一致'}</span>
             </label>
-            <label className="flex flex-col">USD/CNY
-              <input type="number" className="border p-1" value={usdCny} onChange={e => setUsdCny(parseFloat(e.target.value) || 0)} />
+            <label className="flex flex-col flex-1 min-w-[140px]">{t.usdCny}
+              <input type="number" step="0.00001" className="border p-1" value={usdCny.toFixed(5)} onChange={e => setUsdCny(parseFloat(e.target.value) || 0)} onFocus={e => e.target.select()} />
+              <span className="text-xs text-gray-500">{lang === 'en' ? '1 USD equals CNY' : '1美元兑换多少人民币'}</span>
             </label>
-            <label className="flex flex-col">Gas Cost (RMB)
-              <input type="number" className="border p-1" value={gas} onChange={e => setGas(parseFloat(e.target.value) || 0)} />
+            <label className="flex flex-col flex-1 min-w-[140px]">{t.fee}
+              <input type="number" className="border p-1" value={fee} onChange={e => setFee(parseFloat(e.target.value) || 0)} onFocus={e => e.target.select()} />
+              <span className="text-xs text-gray-500">{lang === 'en' ? 'Handling fee in CNY' : '以人民币计的手续费'}</span>
             </label>
-            <label className="flex flex-col">Buy Premium %
-              <input type="number" className="border p-1" value={buyPremium} onChange={e => setBuyPremium(parseFloat(e.target.value) || 0)} />
+            <label className="flex flex-col flex-1 min-w-[140px]">{t.premium}
+              <div className="flex border p-1 items-center">
+                <input type="number" min="0" max="100" step="0.001" className="flex-1 outline-none" value={premium} onChange={e => setPremium(parseFloat(e.target.value) || 0)} onFocus={e => e.target.select()} />
+                <span className="ml-1">%</span>
+              </div>
+              <span className="text-xs text-gray-500">{lang === 'en' ? '0-100%' : '范围0-100%'}</span>
             </label>
-            <label className="flex flex-col">Sell Premium %
-              <input type="number" className="border p-1" value={sellPremium} onChange={e => setSellPremium(parseFloat(e.target.value) || 0)} />
+            <label className="flex flex-col flex-1 min-w-[140px]">{t.ethAmount}
+              <input type="number" className="border p-1" value={ethAmount} onChange={handleEthChange} placeholder="1" onFocus={e => e.target.select()} />
             </label>
-            <label className="flex flex-col">Amount ETH
-              <input type="number" className="border p-1" value={ethAmount} onChange={handleEthChange} placeholder="1" />
-            </label>
-            <label className="flex flex-col">Amount RMB
-              <input type="number" className="border p-1" value={rmbAmount} onChange={handleRmbChange} placeholder="auto" />
+            <label className="flex flex-col flex-1 min-w-[140px]">{t.cnyAmount}
+              <input type="number" className="border p-1" value={cnyAmount} onChange={handleCnyChange} placeholder="auto" onFocus={e => e.target.select()} />
             </label>
           </div>
 
           <div className="border p-4 space-y-2">
-            <div>Market Price: {marketPrice.toFixed(2)} RMB / ETH</div>
-            <div>Buy Price: {buyPrice.toFixed(2)} RMB / ETH (Profit {profitBuy.toFixed(2)})</div>
-            <div>Sell Price: {sellPrice.toFixed(2)} RMB / ETH (Profit {profitSell.toFixed(2)})</div>
+            <div>{t.marketPrice}: {marketPrice.toFixed(5)}</div>
+            <div>{t.priceWithPremium}: {priceWithPremium.toFixed(5)}</div>
+            <div>{t.premiumDiff}: {premiumDiff.toFixed(2)} CNY</div>
           </div>
 
           <div className="border p-4 space-y-2">
-            <div>Market Total: {rmbTotal.toFixed(2)} RMB</div>
-            <div>Buy Total: {buyTotal.toFixed(2)} RMB (Profit {profitBuyTotal.toFixed(2)})</div>
-            <div>Sell Total: {sellTotal.toFixed(2)} RMB (Profit {profitSellTotal.toFixed(2)})</div>
+            <div>{t.marketTotal}: {marketTotalWithFee.toFixed(2)} CNY</div>
+            <div>{t.premiumTotal}: {premiumTotalWithFee.toFixed(2)} CNY</div>
           </div>
 
           <div className="flex gap-2">
-            <button className="px-2 py-1 bg-blue-500 text-white" onClick={() => copyText('buy')}>Copy Buy</button>
-            <button className="px-2 py-1 bg-green-500 text-white" onClick={() => copyText('sell')}>Copy Sell</button>
-            <button className="px-2 py-1 bg-gray-300" onClick={reset}>Reset</button>
+            <button className="px-2 py-1 bg-blue-500 text-white" onClick={copyQuote}>{t.copy}</button>
+            <button className="px-2 py-1 bg-gray-300" onClick={reset}>{t.reset}</button>
           </div>
         </div>
       );

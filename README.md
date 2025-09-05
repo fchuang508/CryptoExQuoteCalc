@@ -7,13 +7,13 @@ CryptoExQuoteCalc is a simple web-based tool designed for OTC (over-the-counter)
 It helps you generate **buy and sell quotations** in seconds, showing **market price, quoted price, and profit margins** clearly.
 
 ## ✨ Features
-- Input ETH/USD and USD/CNY exchange rates
-- Configure **gas costs** and **premium %** (separately for buy/sell)
-- Calculate:
+- Bilingual interface (English / 中文)
+- Input ETHUSD and USD/CNY exchange rates
+- Configure **fee (CNY)** and **premium %**
+- Calculate and compare:
   - Market price (RMB/ETH)
-  - Buy price (RMB you pay to acquire ETH)
-  - Sell price (RMB you receive when selling ETH)
-  - Profit difference
+  - Price with premium
+  - Totals with and without premium (includes fee)
 - Convert ETH ↔ RMB based on quotation
 - One-click copy to share quotation
 
