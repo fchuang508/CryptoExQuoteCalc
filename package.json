@@ -4,10 +4,13 @@
   "description": "A small tool for friends to practice crypto-to-fiat conversion, helping learn value and pricing through simple quote simulations.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"No tests\""
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs"
+  "type": "commonjs",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
 }
