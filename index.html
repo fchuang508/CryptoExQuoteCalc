@@ -62,6 +62,8 @@
       const marketPrice = ethUsd * usdCny;
       const priceWithPremium = marketPrice * (1 + premium / 100);
 
+      const convertEthToCny = (eth, ethUsdRate, usdCnyRate) => eth * ethUsdRate * usdCnyRate;
+
       const handleEthChange = (e) => {
         const value = e.target.value;
         setEthAmount(value === '' ? '' : Math.max(0, parseFloat(value)));
@@ -92,12 +94,19 @@
       };
 
       const reset = () => {
-        setEthUsd(3000);
-        setUsdCny(7);
-        setFee(20);
-        setPremium(3.275);
-        setEthAmount(1);
-        setCnyAmount('');
+        const defaultEthUsd = 3000;
+        const defaultUsdCny = 7;
+        const defaultFee = 20;
+        const defaultPremium = 3.275;
+        const defaultEthAmount = 0;
+        const defaultCnyAmount = convertEthToCny(defaultEthAmount, defaultEthUsd, defaultUsdCny);
+
+        setEthUsd(defaultEthUsd);
+        setUsdCny(defaultUsdCny);
+        setFee(defaultFee);
+        setPremium(defaultPremium);
+        setEthAmount(defaultEthAmount);
+        setCnyAmount(defaultCnyAmount);
       };
 
       return (
