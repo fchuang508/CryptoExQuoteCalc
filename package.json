@@ -1,0 +1,13 @@
+{
+  "name": "cryptoexquotecalc",
+  "version": "1.0.0",
+  "description": "A small tool for friends to practice crypto-to-fiat conversion, helping learn value and pricing through simple quote simulations.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"No tests\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}
