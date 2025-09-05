@@ -56,25 +56,25 @@
       const [usdCny, setUsdCny] = useState(7);
       const [fee, setFee] = useState(20);
       const [premium, setPremium] = useState(3.275);
-      const [ethAmount, setEthAmount] = useState(1);
-      const [cnyAmount, setCnyAmount] = useState('');
+      const [ethAmount, setEthAmount] = useState(0);
+      const [cnyAmount, setCnyAmount] = useState(0);
 
       const marketPrice = ethUsd * usdCny;
       const priceWithPremium = marketPrice * (1 + premium / 100);
 
       const handleEthChange = (e) => {
-        const value = e.target.value;
-        setEthAmount(value === '' ? '' : Math.max(0, parseFloat(value)));
-        setCnyAmount('');
+        const value = Math.max(0, parseFloat(e.target.value) || 0);
+        setEthAmount(value);
+        setCnyAmount(value * ethUsd * usdCny);
       };
 
       const handleCnyChange = (e) => {
-        const value = e.target.value;
-        setCnyAmount(value === '' ? '' : Math.max(0, parseFloat(value)));
-        setEthAmount('');
+        const value = Math.max(0, parseFloat(e.target.value) || 0);
+        setCnyAmount(value);
+        setEthAmount(value / (ethUsd * usdCny));
       };
 
-      const ethTotal = cnyAmount !== '' ? (parseFloat(cnyAmount) || 0) / marketPrice : (parseFloat(ethAmount) || 0);
+      const ethTotal = parseFloat(ethAmount) || 0;
       const marketTotal = ethTotal * marketPrice;
       const marketTotalWithFee = marketTotal + fee;
       const premiumTotal = ethTotal * priceWithPremium;
@@ -96,8 +96,8 @@
         setUsdCny(7);
         setFee(20);
         setPremium(3.275);
-        setEthAmount(1);
-        setCnyAmount('');
+        setEthAmount(0);
+        setCnyAmount(0);
       };
 
       return (
