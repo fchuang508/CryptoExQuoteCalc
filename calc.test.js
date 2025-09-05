@@ -11,13 +11,7 @@ describe('calculation functions', () => {
   });
 
   test('calculateTotals returns totals with fee and premium', () => {
-    const totals = calculateTotals({
-      ethUsd: 3000,
-      usdCny: 7,
-      premiumPercent: 3.275,
-      fee: 20,
-      ethAmount: 1,
-    });
+    const totals = calculateTotals({ ethUsd: 3000, usdCny: 7, premiumPercent: 3.275, fee: 20, ethAmount: 1 });
 
     expect(totals.marketPrice).toBe(21000);
     expect(totals.priceWithPremium).toBeCloseTo(21687.75);
