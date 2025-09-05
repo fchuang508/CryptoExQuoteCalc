@@ -79,9 +79,14 @@
       const premiumTotalWithFee = premiumTotal + fee;
       const premiumDiff = premiumTotal - marketTotal;
 
-      const copyQuote = () => {
+      const copyQuote = async () => {
         const text = `${ethTotal.toFixed(4)} ETH @ ${priceWithPremium.toFixed(5)} CNY (total ${premiumTotalWithFee.toFixed(2)} CNY)`;
-        navigator.clipboard.writeText(text);
+        try {
+          await navigator.clipboard.writeText(text);
+          alert('Quote copied to clipboard');
+        } catch (err) {
+          alert('Failed to copy quote');
+        }
       };
 
       const reset = () => {
