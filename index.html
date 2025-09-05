@@ -63,12 +63,14 @@
       const priceWithPremium = marketPrice * (1 + premium / 100);
 
       const handleEthChange = (e) => {
-        setEthAmount(e.target.value);
+        const value = e.target.value;
+        setEthAmount(value === '' ? '' : Math.max(0, parseFloat(value)));
         setCnyAmount('');
       };
 
       const handleCnyChange = (e) => {
-        setCnyAmount(e.target.value);
+        const value = e.target.value;
+        setCnyAmount(value === '' ? '' : Math.max(0, parseFloat(value)));
         setEthAmount('');
       };
 
@@ -102,15 +104,15 @@
 
           <div className="flex flex-wrap gap-4">
             <label className="flex flex-col flex-1 min-w-[140px]">{t.ethUsd}
-              <input type="number" className="border p-1" value={ethUsd} onChange={e => setEthUsd(parseFloat(e.target.value) || 0)} onFocus={e => e.target.select()} />
+              <input type="number" min="0" className="border p-1" value={ethUsd} onChange={e => setEthUsd(Math.max(0, parseFloat(e.target.value) || 0))} onFocus={e => e.target.select()} />
               <span className="text-xs text-gray-500">{lang === 'en' ? 'DEX/CEX market' : '与DEX/CEX行情一致'}</span>
             </label>
             <label className="flex flex-col flex-1 min-w-[140px]">{t.usdCny}
-              <input type="number" step="0.00001" className="border p-1" value={usdCny.toFixed(5)} onChange={e => setUsdCny(parseFloat(e.target.value) || 0)} onFocus={e => e.target.select()} />
+              <input type="number" min="0" step="0.00001" className="border p-1" value={usdCny.toFixed(5)} onChange={e => setUsdCny(Math.max(0, parseFloat(e.target.value) || 0))} onFocus={e => e.target.select()} />
               <span className="text-xs text-gray-500">{lang === 'en' ? '1 USD equals CNY' : '1美元兑换多少人民币'}</span>
             </label>
             <label className="flex flex-col flex-1 min-w-[140px]">{t.fee}
-              <input type="number" className="border p-1" value={fee} onChange={e => setFee(parseFloat(e.target.value) || 0)} onFocus={e => e.target.select()} />
+              <input type="number" min="0" className="border p-1" value={fee} onChange={e => setFee(Math.max(0, parseFloat(e.target.value) || 0))} onFocus={e => e.target.select()} />
               <span className="text-xs text-gray-500">{lang === 'en' ? 'Handling fee in CNY' : '以人民币计的手续费'}</span>
             </label>
             <label className="flex flex-col flex-1 min-w-[140px]">{t.premium}
@@ -121,10 +123,10 @@
               <span className="text-xs text-gray-500">{lang === 'en' ? '0-100%' : '范围0-100%'}</span>
             </label>
             <label className="flex flex-col flex-1 min-w-[140px]">{t.ethAmount}
-              <input type="number" className="border p-1" value={ethAmount} onChange={handleEthChange} placeholder="1" onFocus={e => e.target.select()} />
+              <input type="number" min="0" className="border p-1" value={ethAmount} onChange={handleEthChange} placeholder="1" onFocus={e => e.target.select()} />
             </label>
             <label className="flex flex-col flex-1 min-w-[140px]">{t.cnyAmount}
-              <input type="number" className="border p-1" value={cnyAmount} onChange={handleCnyChange} placeholder="auto" onFocus={e => e.target.select()} />
+              <input type="number" min="0" className="border p-1" value={cnyAmount} onChange={handleCnyChange} placeholder="auto" onFocus={e => e.target.select()} />
             </label>
           </div>
 
